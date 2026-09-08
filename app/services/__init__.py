@@ -1,0 +1,1 @@
+from app.services.bitacora_service import registrar_bitacora
