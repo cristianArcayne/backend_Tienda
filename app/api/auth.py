@@ -239,3 +239,30 @@ def get_me(current_user: Usuario = Depends(get_current_user)) -> Any:
         "rol": current_user.rol,
         "email": email or f"{current_user.nombre.lower().replace(' ', '.')}@atelier.com"
     }
+
+@router.post("/guest-login", response_model=Token)
+def guest_login(db: Session = Depends(get_db)) -> Any:
+    """Genera una sesión de invitado temporal para explorar el catálogo de la tienda."""
+    guest_ci = "INVITADO"
+    access_token = create_access_token(
+        subject=guest_ci,
+        claims={"nombre": "Invitado", "rol": "invitado", "email": "invitado@minimarket.com"}
+    )
+
+    registrar_bitacora(
+        db=db,
+        id_usuario=None,
+        accion_realizada="ACCESO_INVITADO: Exploración de catálogo sin credenciales",
+        tabla_afectada="sistema"
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": {
+            "ci": guest_ci,
+            "nombre": "Invitado",
+            "rol": "invitado",
+            "email": "invitado@minimarket.com"
+        }
+    }

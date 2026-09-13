@@ -47,6 +47,37 @@ class UsuarioBase(BaseModel):
 class UsuarioCreate(UsuarioBase):
     contrasena: str
 
+class UsuarioCreateFull(BaseModel):
+    ci: str
+    nombre: str
+    rol: str  # 'administrador', 'empleado' / 'trabajador', 'cliente'
+    contrasena: str
+    # Campos opcionales para cliente
+    apellido: Optional[str] = ""
+    genero: Optional[str] = "No especificado"
+    correo_electronico: Optional[str] = None
+    telefono: Optional[str] = ""
+    edad: Optional[int] = 18
+    # Campos opcionales para empleado
+    id_sucursal: Optional[int] = None
+
+class UsuarioDetailOut(BaseModel):
+    ci: str
+    nombre: str
+    rol: str
+    # Datos de cliente
+    apellido: Optional[str] = None
+    correo_electronico: Optional[str] = None
+    telefono: Optional[str] = None
+    genero: Optional[str] = None
+    edad: Optional[int] = None
+    # Datos de empleado
+    id_sucursal: Optional[int] = None
+    sucursal_nombre: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
 class UsuarioOut(UsuarioBase):
     class Config:
         from_attributes = True
@@ -71,3 +102,18 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     ci: Optional[str] = None
     rol: Optional[str] = None
+
+# --- EMPRESA / CONFIGURACION ---
+class EmpresaConfig(BaseModel):
+    razon_social: str = "TPV Minimarket Demo S.A.C."
+    nombre_comercial: str = "Mi Minimarket"
+    ruc_nit: str = "20100100100"
+    direccion: str = "Av. Principal 123"
+    ciudad: str = "Lima"
+    telefono: str = "01-555-1234"
+    email: str = "contacto@minimarket.com"
+    sitio_web: str = "www.minimarket.com"
+    simbolo_moneda: str = "$"
+    codigo_moneda: str = "Dólar (USD)"
+    iva_porcentaje: float = 18.0
+    precios_con_impuesto: bool = True
